@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="PYTHON_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$/../../odoo/odoo18">
+      <sourceFolder url="file://$MODULE_DIR$/../../odoo/odoo18" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../odoo/odoo18-enterprise">
+      <sourceFolder url="file://$MODULE_DIR$/../../odoo/odoo18-enterprise" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../testing/tool-testlib18">
+      <sourceFolder url="file://$MODULE_DIR$/../../testing/tool-testlib18" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="Python 3.10 (odoo18)" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

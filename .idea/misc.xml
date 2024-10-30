@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.10 (odoo18)" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (odoo18)" project-jdk-type="Python SDK" />
+  <component name="commit-message-template">
+    <option name="pattern" value="$TASK_ID - [$TYPE] $CARET_POSITION" />
+    <option name="taskIdDefault" value="TICKET-ID" />
+    <option name="taskIdPostProcessor" value="UPPERCASE" />
+    <option name="taskIdRegex" value="[A-Z]+-[0-9]+" />
+    <option name="trimWhitespacesEnd" value="true" />
+    <option name="trimWhitespacesStart" value="true" />
+    <option name="typeDefault" value="ADD" />
+    <option name="typePostprocessor" value="UPPERCASE" />
+    <option name="typeRegex" value="ADD|FIX|REM|REF" />
+    <option name="unnecessaryWhitespaces" value="true" />
+  </component>
+</project>

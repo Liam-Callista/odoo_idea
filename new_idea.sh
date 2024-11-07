@@ -37,6 +37,16 @@ pause() {
     echo
 }
 
+check_success() {
+    # Use the provided argument or default to $? (exit status of the last command)
+    local exit_status=${1:-$?}
+
+    if [ "$exit_status" -ne 0 ]; then
+        pause
+        exit 1
+    fi
+}
+
 list_folders() {
     local dir="$1"
     find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"
@@ -48,6 +58,7 @@ list_folders() {
 #	DEFINE ARGUMENTS/PARAMETERS
 #
 ###########################################
+echo "# SETUP"
 # Loop until a valid version number is provided
 while true; do
     # Check if a version number is provided as an argument or prompt the user
@@ -117,6 +128,8 @@ DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
 #	GETTING CALLISTA PROJECT FROM GIT
 #
 ###################################################
+echo
+echo "# GIT CALLISTA PROJECT"
 # Clone the GitHub repository into the destination directory
 git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
 
@@ -134,28 +147,29 @@ fi
 #	GETTING IDEA TEMPLATE FROM GIT
 #
 ###############################################
+echo
+echo "# GIT IDEA TEMPLATE"
 TEMP_DIR="${DEST_DIR}/temp"
 
 # Clone the GitHub repository into the destination directory
 git clone "$IDEA_REPO_URL" "$TEMP_DIR"
-
-# Check if the clone was successful
-if [ $? -ne 0 ]; then
-    pause
-    exit 1
-fi
+check_success
 
 # Extract the .idea directory from TEMP_DIR to DEST_DIR
 mv "$TEMP_DIR/.idea" "$DEST_DIR"
+mv_status=$?
 
 # Clean up by removing the temporary directory
 rm -rf "$TEMP_DIR"
+
+check_success $mv_status
 
 #############################
 #
 #	TEXT REPLACES
 #
 #############################
+echo "## TEXT REPLACES"
 # Find all files in the destination directory and process each one
 find "$DEST_DIR/.idea" -type f | while read -r file; do
     # Replace text within files
@@ -171,6 +185,7 @@ done
 #	FILE RENAMES
 #
 #############################
+echo "## FILE RENAMES"
 # Rename files containing 'Odoo_18' in their names
 find "$DEST_DIR/.idea" -depth -name '*Odoo_18*' | while read -r filename; do
     new_filename=$(echo "$filename" | sed "s/Odoo_18/Odoo_$version_input/g")
@@ -183,6 +198,23 @@ find "$DEST_DIR/.idea" -depth -name "rename.iml" | while read -r filename; do
     mv "$filename" "$new_filename"
 done
 
+#############################
+#
+#	PRE-COMMIT
+#
+#############################
+echo
+echo "# PRE-COMMIT"
+cd $DEST_DIR
+pre-commit install
+
+##################
+#
+#	END
+#
+##################
+echo
+echo "# END"
 echo "New .idea folder created in $DEST_DIR."
 pause
 

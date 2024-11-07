@@ -162,6 +162,7 @@ mv_status=$?
 # Clean up by removing the temporary directory
 rm -rf "$TEMP_DIR"
 
+# TODO maybe prompt to delete existing .idea folder (warn about possibly losing project settings and git shelf)
 check_success $mv_status
 
 #############################

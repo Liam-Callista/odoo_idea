@@ -141,8 +141,13 @@ DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
 ###################################################
 echo
 echo "# GIT CALLISTA PROJECT"
-# Clone the GitHub repository into the destination directory
-git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
+# Clone the GitHub repository into the destination directory (multiversion)
+if [ "$folder_name" == "customers" ]; then
+    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
+else
+    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR${version_input}"
+fi
+
 
 # Check if the clone was successful
 if [ $? -ne 0 ]; then
@@ -166,8 +171,12 @@ TEMP_DIR="${DEST_DIR}/temp"
 git clone "$IDEA_REPO_URL" "$TEMP_DIR"
 check_success
 
-# Extract the .idea directory from TEMP_DIR to DEST_DIR
-mv "$TEMP_DIR/.idea" "$DEST_DIR"
+# Extract the .idea directory from TEMP_DIR to DEST_DIR (multiversion)
+if [ "$folder_name" == "customers" ]; then
+    mv "$TEMP_DIR/.idea" "$DEST_DIR"
+else
+    mv "$TEMP_DIR/.idea" "$DEST_DIR${version_input}"
+fi
 mv_status=$?
 
 # Clean up by removing the temporary directory
@@ -182,26 +191,17 @@ check_success $mv_status
 #
 #############################
 echo "## TEXT REPLACES"
-# Don't add testing addons folder 
-if [ "$folder_name" == "testing" ]; then
-    find "$DEST_DIR/.idea/runConfigurations" -type f | while read -r file; do
-        sed -i 's/\.\.\/\.\.\/testing\/tool-testlib#version_input#,//g' "$file"
-    done
-fi
-
-# Add version number to projectname to projects with multiple versions
+# Add version number to projectname (multiversion)
 if [ "$folder_name" != "customers" ]; then
-    find "$DEST_DIR/.idea/runConfigurations" -type f | while read -r file; do
+    find "$DEST_DIR/.idea" -type f | while read -r file; do
         sed -i "s/#multi_version_input#/${version_input}/g" "$file"
     done
 fi
 
-# Replace all place_holders with actual data inside files
+# Replace all place_holders with actual data inside files (multiversion)
 find "$DEST_DIR/.idea" -type f | while read -r file; do
     sed -i "s/#version_input#/${version_input}/g" "$file"
     sed -i "s/#project_name#/${project_name}/g" "$file"
-done
-find "$DEST_DIR/.idea/runConfigurations" -type f | while read -r file; do
     sed -i "s/#folder_name#/${folder_name}/g" "$file"
     sed -i "s/#multi_version_input#//g" "$file"
 done
@@ -212,9 +212,10 @@ done
 #
 #############################
 echo "## FILE RENAMES"
-# Replace all place_holders with actual data in file names
+# Replace all place_holders with actual data in file names (multiversion)
 rename_files "$DEST_DIR/.idea" "#version_input#" "$version_input"
 rename_files "$DEST_DIR/.idea" "#project_name#" "$project_name"
+rename_files "$DEST_DIR/.idea" "#multi_version_input#" "$version_input"
 
 #############################
 #

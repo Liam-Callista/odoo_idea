@@ -145,9 +145,12 @@ fi
 ###################################################
 echo
 echo "# GIT CALLISTA PROJECT"
-# Clone the GitHub repository into the destination directory
-git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
-
+# Clone the GitHub repository into the destination directory (multiversion)
+if [ "$folder_name" == "customers" ]; then
+    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
+else
+    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR" --branch ${version_input}.0
+fi
 
 # Check if the clone was successful
 if [ $? -ne 0 ]; then

@@ -15,7 +15,7 @@
     <option name="ADD_SOURCE_ROOTS" value="false" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../odoo/odoo#version_input#/odoo-bin" />
-    <option name="PARAMETERS" value="--test-enable --stop-after-init -p 8070 -c ../../configs/odoo#version_input#.conf --addons-path=../../testing/tool-testlib#version_input#,../odoo#version_input#-enterprise,addons,../../customers/#project_name# -d #project_name##version_input#" />
+    <option name="PARAMETERS" value="--test-enable --stop-after-init -p 8070 -c ../../configs/odoo#version_input#.conf --addons-path=../../testing/tool-testlib#version_input#,../odoo#version_input#-enterprise,addons,../../#folder_name#/#project_name##multi_version_input# -d #project_name##version_input#" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />

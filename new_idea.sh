@@ -182,10 +182,28 @@ check_success $mv_status
 #
 #############################
 echo "## TEXT REPLACES"
+# Don't add testing addons folder 
+if [ "$folder_name" == "testing" ]; then
+    find "$DEST_DIR/.idea/runConfigurations" -type f | while read -r file; do
+        sed -i 's/\.\.\/\.\.\/testing\/tool-testlib#version_input#,//g' "$file"
+    done
+fi
+
+# Add version number to projectname to projects with multiple versions
+if [ "$folder_name" != "customers" ]; then
+    find "$DEST_DIR/.idea/runConfigurations" -type f | while read -r file; do
+        sed -i "s/#multi_version_input#/${version_input}/g" "$file"
+    done
+fi
+
 # Replace all place_holders with actual data inside files
 find "$DEST_DIR/.idea" -type f | while read -r file; do
-    sed -i "s/#project_name#/${project_name}/g" "$file"
     sed -i "s/#version_input#/${version_input}/g" "$file"
+    sed -i "s/#project_name#/${project_name}/g" "$file"
+done
+find "$DEST_DIR/.idea/runConfigurations" -type f | while read -r file; do
+    sed -i "s/#folder_name#/${folder_name}/g" "$file"
+    sed -i "s/#multi_version_input#//g" "$file"
 done
 
 #############################
@@ -195,8 +213,8 @@ done
 #############################
 echo "## FILE RENAMES"
 # Replace all place_holders with actual data in file names
-rename_files "$DEST_DIR/.idea" "#project_name#" "$project_name"
 rename_files "$DEST_DIR/.idea" "#version_input#" "$version_input"
+rename_files "$DEST_DIR/.idea" "#project_name#" "$project_name"
 
 #############################
 #

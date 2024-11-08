@@ -10,7 +10,7 @@
       <user-name>postgres</user-name>
       <schema-mapping>
         <introspection-scope>
-          <node kind="database" negative="1" condition="^(?!@|postgres).*">
+          <node kind="database" negative="1" condition="^(#project_name#).*">
             <node kind="schema" qname="public" />
           </node>
         </introspection-scope>

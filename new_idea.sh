@@ -52,6 +52,17 @@ list_folders() {
     find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"
 }
 
+rename_files() {
+    local dir="$1"
+    local search="$2"
+    local replace="$3"
+
+    find "$dir" -depth -name "*$search*" | while read -r filename; do
+        new_filename=$(echo "$filename" | sed "s/$search/$replace/")
+        mv "$filename" "$new_filename"
+    done
+}
+
 
 ###########################################
 #
@@ -171,14 +182,10 @@ check_success $mv_status
 #
 #############################
 echo "## TEXT REPLACES"
-# Find all files in the destination directory and process each one
+# Replace all place_holders with actual data inside files
 find "$DEST_DIR/.idea" -type f | while read -r file; do
-    # Replace text within files
-    sed -i "s/odoo18/odoo${version_input}/g" "$file"
-    sed -i "s/Odoo 18/Odoo ${version_input}/g" "$file"
-    sed -i "s/rename18/${project_name}${version_input}/g" "$file"
-    sed -i "s/rename/${project_name}/g" "$file"
-    sed -i "s/testlib18/testlib${version_input}/g" "$file"
+    sed -i "s/#project_name#/${project_name}/g" "$file"
+    sed -i "s/#version_input#/${version_input}/g" "$file"
 done
 
 #############################
@@ -187,17 +194,9 @@ done
 #
 #############################
 echo "## FILE RENAMES"
-# Rename files containing 'Odoo_18' in their names
-find "$DEST_DIR/.idea" -depth -name '*Odoo_18*' | while read -r filename; do
-    new_filename=$(echo "$filename" | sed "s/Odoo_18/Odoo_$version_input/g")
-    mv "$filename" "$new_filename"
-done
-
-# Rename rename.iml to the project-specific name
-find "$DEST_DIR/.idea" -depth -name "rename.iml" | while read -r filename; do
-    new_filename=$(echo "$filename" | sed "s/rename\.iml/${project_name}.iml/")
-    mv "$filename" "$new_filename"
-done
+# Replace all place_holders with actual data in file names
+rename_files "$DEST_DIR/.idea" "#project_name#" "$project_name"
+rename_files "$DEST_DIR/.idea" "#version_input#" "$version_input"
 
 #############################
 #

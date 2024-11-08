@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Odoo 18" type="PythonConfigurationType" factoryName="Python">
-    <module name="rename" />
+  <configuration default="false" name="Odoo #version_input# &lt;t t-debug=&quot;pdb&quot;/&gt;" type="PythonConfigurationType" factoryName="Python">
+    <module name="#project_name#" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -8,14 +8,14 @@
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
     <option name="SDK_HOME" value="" />
-    <option name="SDK_NAME" value="Python 3.10 (odoo18)" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../odoo/odoo18" />
+    <option name="SDK_NAME" value="Python 3.10 (odoo#version_input#)" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../odoo/odoo#version_input#" />
     <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="false" />
     <option name="ADD_SOURCE_ROOTS" value="false" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../odoo/odoo18/odoo-bin" />
-    <option name="PARAMETERS" value="--dev=xml -c ../../configs/odoo18.conf --addons-path=../odoo18-enterprise,addons,../../customers/rename -d rename18" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../odoo/odoo#version_input#/odoo-bin" />
+    <option name="PARAMETERS" value="--dev=qweb -c ../../configs/odoo#version_input#.conf --addons-path=../odoo#version_input#-enterprise,addons,../../customers/#project_name# -d #project_name##version_input#" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />

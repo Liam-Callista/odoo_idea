@@ -131,8 +131,12 @@ while true; do
     fi
 done
 
-# Set destination directory
-DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
+# Set destination directory (multiversion)
+if [ "$folder_name" == "customers" ]; then
+    DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
+else
+    DEST_DIR="$DEV_DIR/${folder_name}/${project_name}${version_input}"
+fi
 
 ###################################################
 #
@@ -141,12 +145,8 @@ DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
 ###################################################
 echo
 echo "# GIT CALLISTA PROJECT"
-# Clone the GitHub repository into the destination directory (multiversion)
-if [ "$folder_name" == "customers" ]; then
-    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
-else
-    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR${version_input}"
-fi
+# Clone the GitHub repository into the destination directory
+git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
 
 
 # Check if the clone was successful
@@ -171,12 +171,8 @@ TEMP_DIR="${DEST_DIR}/temp"
 git clone "$IDEA_REPO_URL" "$TEMP_DIR"
 check_success
 
-# Extract the .idea directory from TEMP_DIR to DEST_DIR (multiversion)
-if [ "$folder_name" == "customers" ]; then
-    mv "$TEMP_DIR/.idea" "$DEST_DIR"
-else
-    mv "$TEMP_DIR/.idea" "$DEST_DIR${version_input}"
-fi
+# Extract the .idea directory from TEMP_DIR to DEST_DIR
+mv "$TEMP_DIR/.idea" "$DEST_DIR"
 mv_status=$?
 
 # Clean up by removing the temporary directory

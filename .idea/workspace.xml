@@ -7,7 +7,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/../../odoo/odoo#version_input#" />
       <path value="$PROJECT_DIR$/../../odoo/odoo#version_input#-enterprise" />
-      <path value="$PROJECT_DIR$/../../testing/tool-testlib#version_input#" />
     </ignored-roots>
   </component>
 </project>

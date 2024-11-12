@@ -8,9 +8,6 @@
     <content url="file://$MODULE_DIR$/../../odoo/odoo#version_input#-enterprise">
       <sourceFolder url="file://$MODULE_DIR$/../../odoo/odoo#version_input#-enterprise" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../testing/tool-testlib#version_input#">
-      <sourceFolder url="file://$MODULE_DIR$/../../testing/tool-testlib#version_input#" isTestSource="false" />
-    </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (odoo#version_input#)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

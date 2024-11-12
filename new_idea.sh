@@ -52,17 +52,6 @@ list_folders() {
     find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"
 }
 
-rename_files() {
-    local dir="$1"
-    local search="$2"
-    local replace="$3"
-
-    find "$dir" -depth -name "*$search*" | while read -r filename; do
-        new_filename=$(echo "$filename" | sed "s/$search/$replace/")
-        mv "$filename" "$new_filename"
-    done
-}
-
 
 ###########################################
 #
@@ -184,37 +173,37 @@ rm -rf "$TEMP_DIR"
 # TODO maybe prompt to delete existing .idea folder (warn about possibly losing project settings and git shelf)
 check_success $mv_status
 
-#############################
+###################################
 #
-#	TEXT REPLACES
+#	PLACEHOLDER REPLACES
 #
-#############################
-echo "## TEXT REPLACES"
-# Add version number to projectname (multiversion)
-if [ "$folder_name" != "customers" ]; then
-    find "$DEST_DIR/.idea" -type f | while read -r file; do
-        sed -i "s/#multi_version_input#/${version_input}/g" "$file"
-    done
-fi
+###################################
+echo "## PLACEHOLDER REPLACES"
+# Go through all files 
+find "$DEST_DIR/.idea" -type f | while read -r filename; do
+    new_filename=$filename
 
-# Replace all place_holders with actual data inside files (multiversion)
-find "$DEST_DIR/.idea" -type f | while read -r file; do
-    sed -i "s/#version_input#/${version_input}/g" "$file"
-    sed -i "s/#project_name#/${project_name}/g" "$file"
-    sed -i "s/#folder_name#/${folder_name}/g" "$file"
-    sed -i "s/#multi_version_input#//g" "$file"
+    # Add version number to text and filename if multiversion (multiversion)
+    if [ "$folder_name" != "customers" ]; then
+        sed -i "s/#multi_version_input#/${version_input}/g" "$filename"
+        new_filename=$(echo "$filename" | sed "s/#multi_version_input#/$version_input/")
+    else
+        sed -i "s/#multi_version_input#//g" "$filename"
+        new_filename=$(echo "$filename" | sed "s/#multi_version_input#//")
+    fi
+
+    # Text replaces
+    sed -i "s/#version_input#/${version_input}/g" "$filename"
+    sed -i "s/#project_name#/${project_name}/g" "$filename"
+    sed -i "s/#folder_name#/${folder_name}/g" "$filename"
+    
+    # File renames
+    new_filename=$(echo "$new_filename" | sed "s/#version_input#/$version_input/")
+    new_filename=$(echo "$new_filename" | sed "s/#project_name#/$project_name/")
+    if [ "$filename" != $new_filename ]; then
+        mv "$filename" "$new_filename"
+    fi
 done
-
-#############################
-#
-#	FILE RENAMES
-#
-#############################
-echo "## FILE RENAMES"
-# Replace all place_holders with actual data in file names (multiversion)
-rename_files "$DEST_DIR/.idea" "#version_input#" "$version_input"
-rename_files "$DEST_DIR/.idea" "#project_name#" "$project_name"
-rename_files "$DEST_DIR/.idea" "#multi_version_input#" "$version_input"
 
 #############################
 #

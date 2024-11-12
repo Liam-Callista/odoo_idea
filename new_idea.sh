@@ -195,11 +195,11 @@ find "$DEST_DIR/.idea" -type f | while read -r filename; do
     # Remove or handle testing code blocks
     if [ "$folder_name" == "testing" ]; then
         # Delete all text between #testing_code_start# and #testing_code_end#
-        sed -i '/#testing_code_start#/,/#testing_code_end#/d' "$filename"
+        sed -i ':a;N;$!ba;s/#testing_code_start#.*#testing_code_end#//g' "$filename"
     else
         # Only delete lines containing the markers #testing_code_start# and #testing_code_end#
-        sed -i '/#testing_code_start#/d' "$filename"
-        sed -i '/#testing_code_end#/d' "$filename"
+        sed -i 's/#testing_code_start#//g' "$filename"
+        sed -i 's/#testing_code_end#//g' "$filename"
     fi
 
     # Text replaces

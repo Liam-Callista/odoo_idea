@@ -70,22 +70,20 @@ rename_files() {
 #
 ###########################################
 echo "# SETUP"
-# Loop until a valid version number is provided
+# Loop until a valid project name is provided
 while true; do
-    # Check if a version number is provided as an argument or prompt the user
+    # Check if a project name is provided as a second argument or prompt the user
     if [[ $# -ge 1 ]]; then
-        version_input="$1"
+        project_name="$1"
     else
-        read -r -p "Enter a version number: " version_input
+        read -r -p "Enter the project name: " project_name
     fi
 
-    # Validate input: it should be a number or a number with one decimal place
-    if [[ ! "$version_input" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
-        echo -e "You must provide a valid version number (e.g., 18 or 18.0).\n"
+    # Validate project name: it should only contain a-Z and not be empty
+    if [[ ! "$project_name" =~ ^[a-z-]+$ ]]; then
+        echo -e "You must provide a valid project name containing only letters.\n"
         set -- # Clear the arguments
     else
-        # Extract the major version number (integer part)
-        version_input=${version_input%%.*}
         break
     fi
 done
@@ -93,8 +91,8 @@ done
 # Loop until a valid folder name is provided
 while true; do
     # Check if a project name is provided as a second argument or prompt the user
-    if [[ $# -ge 3 ]]; then
-        folder_name="$3"
+    if [[ $# -ge 2 ]]; then
+        folder_name="$2"
     else
     	echo -e "Available folders:\n$(list_folders "$HOME/Development")"
         read -r -p "Enter the folder name (empty for \"customers\"): " folder_name
@@ -113,20 +111,22 @@ while true; do
     fi
 done
 
-# Loop until a valid project name is provided
+# Loop until a valid version number is provided
 while true; do
-    # Check if a project name is provided as a second argument or prompt the user
-    if [[ $# -ge 2 ]]; then
-        project_name="$2"
+    # Check if a version number is provided as an argument or prompt the user
+    if [[ $# -ge 3 ]]; then
+        version_input="$3"
     else
-        read -r -p "Enter the project name: " project_name
+        read -r -p "Enter a version number: " version_input
     fi
 
-    # Validate project name: it should only contain a-Z and not be empty
-    if [[ ! "$project_name" =~ ^[a-z-]+$ ]]; then
-        echo -e "You must provide a valid project name containing only letters.\n"
+    # Validate input: it should be a number or a number with one decimal place
+    if [[ ! "$version_input" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+        echo -e "You must provide a valid version number (e.g., 18 or 18.0).\n"
         set -- # Clear the arguments
     else
+        # Extract the major version number (integer part)
+        version_input=${version_input%%.*}
         break
     fi
 done

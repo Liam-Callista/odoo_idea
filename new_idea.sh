@@ -164,7 +164,7 @@ git clone "$IDEA_REPO_URL" "$TEMP_DIR"
 check_success
 
 # Extract the .idea directory from TEMP_DIR to DEST_DIR
-mv "$TEMP_DIR/.idea" "$DEST_DIR"
+mv "$TEMP_DIR/idea" "$DEST_DIR/.idea"
 mv_status=$?
 
 # Clean up by removing the temporary directory

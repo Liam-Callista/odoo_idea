@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Odoo #version_input# Test" type="PythonConfigurationType" factoryName="Python">
-    <module name="#project_name#" />
+    <module name="#project_name##multi_version_input#" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />

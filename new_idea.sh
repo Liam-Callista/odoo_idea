@@ -192,6 +192,16 @@ find "$DEST_DIR/.idea" -type f | while read -r filename; do
         new_filename=$(echo "$filename" | sed "s/#multi_version_input#//")
     fi
 
+    # Remove or handle testing code blocks
+    if [ "$folder_name" == "testing" ]; then
+        # Delete all text between #testing_code_start# and #testing_code_end#
+        sed -i '/#testing_code_start#/,/#testing_code_end#/d' "$filename"
+    else
+        # Only remove the markers #testing_code_start# and #testing_code_end#
+        sed -i 's/#testing_code_start#//g' "$filename"
+        sed -i 's/#testing_code_end#//g' "$filename"
+    fi
+
     # Text replaces
     sed -i "s/#version_input#/${version_input}/g" "$filename"
     sed -i "s/#project_name#/${project_name}/g" "$filename"

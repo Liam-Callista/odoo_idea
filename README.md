@@ -2,12 +2,12 @@
 ## Script Overview
 
 This script initializes a new Odoo project environment.  
-All necessary details and steps are included within the script itself.
-
+All necessary details and steps are included within the script itself. 
+(-h or --help)
 
 ## .idea Configuration
 
-The `.idea` folder contains project settings for JetBrains IDEs. It includes:
+The `idea` folder contains project settings for JetBrains IDEs. It includes:
 
 - **Run Configurations**: How to run and debug the project.
 - **Source Folders**: 

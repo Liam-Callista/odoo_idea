@@ -1,34 +1,48 @@
 #!/bin/bash
 
-# new_idea.sh
-# 
-# A script to initialize a new Odoo project environment by cloning a specified project 
-# repository and setting up the required IntelliJ IDEA project files (.idea).
+#################
 #
-# Usage:
-#   ./new_idea.sh [<version_number>] [<project_name>] [<folder_name>]
+#	CONSTANTS
 #
-# Arguments:
-#   <version_number> : Optional. The Odoo version
-#   <project_name>   : Optional. Name of the specific project to clone from the callista-tools GitHub
-#   <folder_name>    : Optional. Directory under "$HOME/Development"
-#
-# Example:
-#   ./new_idea.sh                     
-#   ./new_idea.sh 17                
-#   ./new_idea.sh 17 cim          
-#   ./new_idea.sh 17 cim customers
-#
-# Notes:
-# - Also works with existing project folders
-
-
+#################
 DEV_DIR="$HOME/Development"
+CUS_DIR="customers"
+TEST_DIR="testing"
+
 REPOS_URL="git@github.com:callista-tools/"
 IDEA_REPO_URL="git@github.com:Liam-Callista/odoo_idea.git"
 
-CUS_DIR="customers"
-TEST_DIR="testing"
+#################
+#
+#	HELP OPTION
+#
+#################
+if [[ " $* " == *" --help "* || " $* " == *" -h "* ]]; then
+    echo
+    echo "Usage: $0 [<project_name>] [<folder_name>] [<version_number>]"
+    echo ""
+    echo "Initialize a new Odoo project environment by cloning a project repository"
+    echo "and setting up IntelliJ IDEA project files (.idea)."
+    echo ""
+    echo "Arguments:"
+    echo "  <project_name>   (Optional) Name of the specific project to clone."
+    echo "  <folder_name>    (Optional) Directory under '~/Development'."
+    echo "  <version_number> (Optional) Odoo version number to set up the environment."
+    echo ""
+    echo "Examples (Missing args are prompted):"
+    echo "  $0"
+    echo "  $0 cim"
+    echo "  $0 cim customers"
+    echo "  $0 cim customers 17"
+    echo ""
+    echo "Notes:"
+    echo "  - Also works with existing project folders"
+    echo ""
+    echo "Options:"
+    echo "  [-h, --help]       Show this help message and exit."
+    echo
+    exit 0
+fi
 
 #######################################
 #

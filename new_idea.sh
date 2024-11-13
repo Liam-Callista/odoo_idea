@@ -12,6 +12,8 @@ TEST_DIR="testing"
 REPOS_URL="git@github.com:callista-tools/"
 IDEA_REPO_URL="git@github.com:Liam-Callista/odoo_idea.git"
 
+ODOO_VERSION_REGEX='[0-9]+(\.[0-9]+)?'
+
 #################
 #
 #	HELP OPTION
@@ -103,7 +105,7 @@ while true; do
         folder_name="$2"
     else
         echo -e "Available folders:\n$(list_folders "$HOME/Development")"
-        read -r -p "Enter the folder name (empty for \"$CUS_DIR\"): " folder_name
+        read -r -p "Enter the folder name (empty for '$CUS_DIR'): " folder_name
     fi
 
     # Validate folder name: it should only contain a-Z or be empty
@@ -119,17 +121,27 @@ while true; do
     fi
 done
 
+# Check for main branch
+PROJECT_REPO_URL="$REPOS_URL${project_name}.git"
+DEFAULT_VERSION=$(git ls-remote --symref "$PROJECT_REPO_URL" HEAD 2>/dev/null | grep -oP "(?<=refs/heads/)$ODOO_VERSION_REGEX")
+
 # Loop until a valid version number is provided
 while true; do
     # Check if a version number is provided as an argument or prompt the user
     if [[ $# -ge 3 ]]; then
         version_input="$3"
     else
-        read -r -p "Enter a version number: " version_input
+        read -r -p "Enter a version number${DEFAULT_VERSION:+" (empty for '$DEFAULT_VERSION')"}: " version_input
+    fi
+
+    # Fill in default if $version_input is empty and $DEFAULT_VERSION is available
+    if [[ -z "$version_input" && -n "$DEFAULT_VERSION" ]]; then
+        version_input="$DEFAULT_VERSION"
+        echo "Selected version $version_input"
     fi
 
     # Validate input: it should be a number or a number with one decimal place
-    if [[ ! "$version_input" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+    if [[ ! "$version_input" =~ ^($ODOO_VERSION_REGEX)?$ ]]; then
         echo -e "You must provide a valid version number (e.g., 18 or 18.0).\n"
         set -- # Clear the arguments
     else
@@ -139,13 +151,6 @@ while true; do
     fi
 done
 
-# Set destination directory (multiversion)
-if [ "$folder_name" == "$CUS_DIR" ]; then
-    DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
-else
-    DEST_DIR="$DEV_DIR/${folder_name}/${project_name}${version_input}"
-fi
-
 ###################################################
 #
 #	GETTING CALLISTA PROJECT FROM GIT
@@ -153,12 +158,19 @@ fi
 ###################################################
 echo
 echo "# GIT CALLISTA PROJECT"
+# Set destination directory (multiversion)
+if [ "$folder_name" == "$CUS_DIR" ]; then
+    DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
+else
+    DEST_DIR="$DEV_DIR/${folder_name}/${project_name}${version_input}"
+fi
+
 {
     # Clone the GitHub repository into the destination directory (multiversion)
     if [ "$folder_name" == "$CUS_DIR" ]; then
-        git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
+        git clone "$PROJECT_REPO_URL" "$DEST_DIR"
     else
-        git clone "$REPOS_URL${project_name}.git" "$DEST_DIR" --branch ${version_input}.0
+        git clone "$PROJECT_REPO_URL" "$DEST_DIR" --branch ${version_input}.0
     fi
 } || {
     # Check if the clone was successful

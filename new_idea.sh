@@ -145,7 +145,7 @@ while true; do
     fi
 
     # Validate input: it should be a number or a number with one decimal place
-    if [[ ! "$version_input" =~ ^($ODOO_VERSION_REGEX)?$ ]]; then
+    if [[ ! "$version_input" =~ ^$ODOO_VERSION_REGEX$ ]]; then
         echo -e "You must provide a valid version number (e.g., 18 or 18.0).\n"
         set -- # Clear the arguments
     else

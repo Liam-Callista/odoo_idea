@@ -27,6 +27,9 @@ DEV_DIR="$HOME/Development"
 REPOS_URL="git@github.com:callista-tools/"
 IDEA_REPO_URL="git@github.com:Liam-Callista/odoo_idea.git"
 
+CUS_DIR="customers"
+TEST_DIR="testing"
+
 #######################################
 #
 #	DEFINE HELPER FUNCTIONS
@@ -84,7 +87,7 @@ while true; do
         folder_name="$2"
     else
     	echo -e "Available folders:\n$(list_folders "$HOME/Development")"
-        read -r -p "Enter the folder name (empty for \"customers\"): " folder_name
+        read -r -p "Enter the folder name (empty for \"$CUS_DIR\"): " folder_name
     fi
 
     # Validate folder name: it should only contain a-Z or be empty
@@ -95,7 +98,7 @@ while true; do
     elif [[ ! -d "$HOME/Development/$folder_name" ]]; then
         echo -e "The folder '$folder_name' does not exist in $HOME/Development.\n"
     else
-        folder_name=${folder_name:-"customers"}
+        folder_name=${folder_name:-"$CUS_DIR"}
         break
     fi
 done
@@ -121,7 +124,7 @@ while true; do
 done
 
 # Set destination directory (multiversion)
-if [ "$folder_name" == "customers" ]; then
+if [ "$folder_name" == "$CUS_DIR" ]; then
     DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
 else
     DEST_DIR="$DEV_DIR/${folder_name}/${project_name}${version_input}"
@@ -135,7 +138,7 @@ fi
 echo
 echo "# GIT CALLISTA PROJECT"
 # Clone the GitHub repository into the destination directory (multiversion)
-if [ "$folder_name" == "customers" ]; then
+if [ "$folder_name" == "$CUS_DIR" ]; then
     git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
 else
     git clone "$REPOS_URL${project_name}.git" "$DEST_DIR" --branch ${version_input}.0
@@ -184,7 +187,7 @@ find "$DEST_DIR/.idea" -type f | while read -r filename; do
     new_filename=$filename
 
     # Add version number to text and filename if multiversion (multiversion)
-    if [ "$folder_name" != "customers" ]; then
+    if [ "$folder_name" != "$CUS_DIR" ]; then
         sed -i "s/#multi_version_input#/${version_input}/g" "$filename"
         new_filename=$(echo "$filename" | sed "s/#multi_version_input#/$version_input/")
     else
@@ -193,7 +196,7 @@ find "$DEST_DIR/.idea" -type f | while read -r filename; do
     fi
 
     # Remove or handle testing code blocks
-    if [ "$folder_name" == "testing" ]; then
+    if [ "$folder_name" == "$TEST_DIR" ]; then
         # Delete all text between #testing_code_start# and #testing_code_end#
         sed -i ':a;N;$!ba;s/#testing_code_start#.*#testing_code_end#//g' "$filename"
     else

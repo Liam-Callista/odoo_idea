@@ -108,15 +108,22 @@ while true; do
         read -r -p "Enter the folder name (empty for '$CUS_DIR'): " folder_name
     fi
 
+    # Fill in default if $version_input is empty and $CUS_DIR is available
+    if [[ -z "$folder_name" && -n "$CUS_DIR" ]]; then
+        folder_name="$CUS_DIR"
+        echo "Selected default directory: $folder_name"
+        echo
+    fi
+
     # Validate folder name: it should only contain a-Z or be empty
-    if [[ ! "$folder_name" =~ ^[a-z]*$ ]]; then
+    if [[ ! "$folder_name" =~ ^[a-z]+$ ]]; then
         echo -e "You must provide a valid folder name containing only letters.\n"
         set -- # Clear the arguments
     # Check if folder exists
     elif [[ ! -d "$HOME/Development/$folder_name" ]]; then
         echo -e "The folder '$folder_name' does not exist in $HOME/Development.\n"
     else
-        folder_name=${folder_name:-"$CUS_DIR"}
+        folder_name=${folder_name}
         break
     fi
 done
@@ -137,7 +144,7 @@ while true; do
     # Fill in default if $version_input is empty and $DEFAULT_VERSION is available
     if [[ -z "$version_input" && -n "$DEFAULT_VERSION" ]]; then
         version_input="$DEFAULT_VERSION"
-        echo "Selected version $version_input"
+        echo "Selected default version: $version_input"
     fi
 
     # Validate input: it should be a number or a number with one decimal place

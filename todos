@@ -1,3 +1,2 @@
-- overwrite .idea prompt
 - get branch number from git if possible for customers (because they should have only 1 main version)
 -- make project name first args, folder 2nd. If folder is customer and project exists, prompt but set main number as default if empty and get it from git if possible

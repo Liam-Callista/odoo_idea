@@ -40,14 +40,16 @@ pause() {
     echo
 }
 
-check_success() {
-    # Use the provided argument or default to $? (exit status of the last command)
-    local exit_status=${1:-$?}
-
-    if [ "$exit_status" -ne 0 ]; then
-        pause
-        exit 1
+handle_exit() {
+    local message="$1"
+    echo
+    echo "Operation aborted"
+    if [ -n "$message" ]; then
+        echo "$message"
     fi
+    read -n 1 -s -r -p 'Press any key to exit...'
+    echo
+    exit 1
 }
 
 list_folders() {
@@ -86,7 +88,7 @@ while true; do
     if [[ $# -ge 2 ]]; then
         folder_name="$2"
     else
-    	echo -e "Available folders:\n$(list_folders "$HOME/Development")"
+        echo -e "Available folders:\n$(list_folders "$HOME/Development")"
         read -r -p "Enter the folder name (empty for \"$CUS_DIR\"): " folder_name
     fi
 
@@ -137,21 +139,21 @@ fi
 ###################################################
 echo
 echo "# GIT CALLISTA PROJECT"
-# Clone the GitHub repository into the destination directory (multiversion)
-if [ "$folder_name" == "$CUS_DIR" ]; then
-    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
-else
-    git clone "$REPOS_URL${project_name}.git" "$DEST_DIR" --branch ${version_input}.0
-fi
-
-# Check if the clone was successful
-if [ $? -ne 0 ]; then
-    echo
-    read -p "Do you want to continue by adding .idea? (Y/N): " user_choice
-    if [[ ! "$user_choice" =~ ^[Yy]((E|e)(S|s)?)?$ ]]; then
-        exit 1
+{
+    # Clone the GitHub repository into the destination directory (multiversion)
+    if [ "$folder_name" == "$CUS_DIR" ]; then
+        git clone "$REPOS_URL${project_name}.git" "$DEST_DIR"
+    else
+        git clone "$REPOS_URL${project_name}.git" "$DEST_DIR" --branch ${version_input}.0
     fi
-fi
+} || {
+    # Check if the clone was successful
+    echo
+    read -p "Do you want to continue by adding .idea? [Y/N]: " user_choice
+    if [[ ! "$user_choice" =~ ^[Yy]((E|e)(S|s)?)?$ ]]; then
+        handle_exit
+    fi
+}
 
 ###############################################
 #
@@ -163,18 +165,31 @@ echo "# GIT IDEA TEMPLATE"
 TEMP_DIR="${DEST_DIR}/temp"
 
 # Clone the GitHub repository into the destination directory
-git clone "$IDEA_REPO_URL" "$TEMP_DIR"
-check_success
+git clone "$IDEA_REPO_URL" "$TEMP_DIR" || handle_exit "There was an error during template cloning"
+
+# Check if the .idea folder already exists
+if [ -d "$DEST_DIR/.idea" ]; then
+    echo
+    echo "WARNING"
+    echo "The .idea folder already exists in $DEST_DIR."
+    echo "Overwriting it may result in the loss of project settings or git shelves."
+    read -p "Do you want to overwrite it? [Y/N]: " user_choice
+    if [[ "$user_choice" =~ ^[Yy]((E|e)(S|s)?)?$ ]]; then
+        # Remove existing .idea folder
+        rm -rf "$DEST_DIR/.idea"
+    else
+        # Clean up and exit
+        rm -rf "$TEMP_DIR"
+        handle_exit "The .idea folder was not replaced."
+    fi
+fi
 
 # Extract the .idea directory from TEMP_DIR to DEST_DIR
-mv "$TEMP_DIR/idea" "$DEST_DIR/.idea"
-mv_status=$?
-
-# Clean up by removing the temporary directory
-rm -rf "$TEMP_DIR"
-
-# TODO maybe prompt to delete existing .idea folder (warn about possibly losing project settings and git shelf)
-check_success $mv_status
+mv "$TEMP_DIR/idea" "$DEST_DIR/.idea" && {
+    # If success, Clean up
+    rm -rf "$TEMP_DIR"
+} || handle_exit "There was an error when moving the temp folder."
+echo "New .idea folder created in $DEST_DIR."
 
 ###################################
 #
@@ -182,41 +197,47 @@ check_success $mv_status
 #
 ###################################
 echo "## PLACEHOLDER REPLACES"
-# Go through all files 
-find "$DEST_DIR/.idea" -type f | while read -r filename; do
-    new_filename=$filename
+{
+    # Go through all files
+    find "$DEST_DIR/.idea" -type f | while read -r filename; do
+        new_filename=$filename
 
-    # Add version number to text and filename if multiversion (multiversion)
-    if [ "$folder_name" != "$CUS_DIR" ]; then
-        sed -i "s/#multi_version_input#/${version_input}/g" "$filename"
-        new_filename=$(echo "$filename" | sed "s/#multi_version_input#/$version_input/")
-    else
-        sed -i "s/#multi_version_input#//g" "$filename"
-        new_filename=$(echo "$filename" | sed "s/#multi_version_input#//")
-    fi
+        # Add version number to text and filename if multiversion (multiversion)
+        if [ "$folder_name" != "$CUS_DIR" ]; then
+            sed -i "s/#multi_version_input#/${version_input}/g" "$filename"
+            new_filename=$(echo "$filename" | sed "s/#multi_version_input#/$version_input/")
+        else
+            sed -i "s/#multi_version_input#//g" "$filename"
+            new_filename=$(echo "$filename" | sed "s/#multi_version_input#//")
+        fi
 
-    # Remove or handle testing code blocks
-    if [ "$folder_name" == "$TEST_DIR" ]; then
-        # Delete all text between #testing_code_start# and #testing_code_end#
-        sed -i ':a;N;$!ba;s/#testing_code_start#.*#testing_code_end#//g' "$filename"
-    else
-        # Only delete lines containing the markers #testing_code_start# and #testing_code_end#
-        sed -i 's/#testing_code_start#//g' "$filename"
-        sed -i 's/#testing_code_end#//g' "$filename"
-    fi
+        # Remove or handle testing code blocks
+        if [ "$folder_name" == "$TEST_DIR" ]; then
+            # Delete all text between #testing_code_start# and #testing_code_end#
+            sed -i ':a;N;$!ba;s/#testing_code_start#.*#testing_code_end#//g' "$filename"
+        else
+            # Only delete lines containing the markers #testing_code_start# and #testing_code_end#
+            sed -i 's/#testing_code_start#//g' "$filename"
+            sed -i 's/#testing_code_end#//g' "$filename"
+        fi
 
-    # Text replaces
-    sed -i "s/#version_input#/${version_input}/g" "$filename"
-    sed -i "s/#project_name#/${project_name}/g" "$filename"
-    sed -i "s/#folder_name#/${folder_name}/g" "$filename"
-    
-    # File renames
-    new_filename=$(echo "$new_filename" | sed "s/#version_input#/$version_input/")
-    new_filename=$(echo "$new_filename" | sed "s/#project_name#/$project_name/")
-    if [ "$filename" != $new_filename ]; then
-        mv "$filename" "$new_filename"
-    fi
-done
+        # Text replaces
+        sed -i "s/#version_input#/${version_input}/g" "$filename"
+        sed -i "s/#project_name#/${project_name}/g" "$filename"
+        sed -i "s/#folder_name#/${folder_name}/g" "$filename"
+
+        # File renames
+        new_filename=$(echo "$new_filename" | sed "s/#version_input#/$version_input/")
+        new_filename=$(echo "$new_filename" | sed "s/#project_name#/$project_name/")
+        if [ "$filename" != $new_filename ]; then
+            mv "$filename" "$new_filename"
+        fi
+    done
+} || {
+    # Remove faulty .idea folder if replaces failed
+    rm -rf "$DEST_DIR/.idea"
+    handle_exit "There was an error when replacing the placeholders."
+}
 
 #############################
 #
@@ -225,8 +246,10 @@ done
 #############################
 echo
 echo "# PRE-COMMIT"
-cd $DEST_DIR
-pre-commit install
+{
+    cd $DEST_DIR
+    pre-commit install
+} || handle_exit "There was an error during the pre-commit"
 
 ##################
 #
@@ -235,6 +258,5 @@ pre-commit install
 ##################
 echo
 echo "# END"
-echo "New .idea folder created in $DEST_DIR."
+echo "Project setup completed at $DEST_DIR."
 pause
-

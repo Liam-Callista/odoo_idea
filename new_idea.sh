@@ -83,9 +83,8 @@ echo "# SETUP"
 # Loop until a valid project name is provided
 while true; do
     # Check if a project name is provided as a second argument or prompt the user
-    if [[ $# -ge 1 ]]; then
-        project_name="$1"
-    else
+    project_name="$1"
+    if [[ -z "$project_name" ]]; then
         read -r -p "Enter the project name: " project_name
     fi
 
@@ -101,9 +100,8 @@ done
 # Loop until a valid folder name is provided
 while true; do
     # Check if a project name is provided as a second argument or prompt the user
-    if [[ $# -ge 2 ]]; then
-        folder_name="$2"
-    else
+    folder_name="$2"
+    if [[ -z "$folder_name" ]]; then
         echo -e "Available folders:\n$(list_folders "$HOME/Development")"
         read -r -p "Enter the folder name (empty for '$CUS_DIR'): " folder_name
     fi
@@ -135,9 +133,8 @@ DEFAULT_VERSION=$(git ls-remote --symref "$PROJECT_REPO_URL" HEAD 2>/dev/null | 
 # Loop until a valid version number is provided
 while true; do
     # Check if a version number is provided as an argument or prompt the user
-    if [[ $# -ge 3 ]]; then
-        version_input="$3"
-    else
+    version_input="$3"
+    if [[ -z "$version_input" ]]; then
         read -r -p "Enter a version number${DEFAULT_VERSION:+" (empty for '$DEFAULT_VERSION')"}: " version_input
     fi
 

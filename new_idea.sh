@@ -14,6 +14,8 @@ IDEA_REPO_URL="git@github.com:Liam-Callista/odoo_idea.git"
 
 ODOO_VERSION_REGEX='[0-9]+(\.[0-9]+)?'
 
+REQUIRED_DEPENDENCIES=("git" "pre-commit" "sed")
+
 #################
 #
 #	HELP OPTION
@@ -73,13 +75,36 @@ list_folders() {
     find "$dir" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"
 }
 
+##########################
+#
+#   DEPENDENCY CHECK
+#
+##########################
+echo "# CHECKING DEPENDENCIES"
+missing_dependencies=()
+
+# Check each dependency
+for dep in "${REQUIRED_DEPENDENCIES[@]}"; do
+    if ! command -v "$dep" &>/dev/null; then
+        missing_dependencies+=("$dep")
+    fi
+done
+
+# Handle missing dependencies
+if [ ${#missing_dependencies[@]} -gt 0 ]; then
+    echo "The following dependencies are missing and need to be installed:"
+    for dep in "${missing_dependencies[@]}"; do
+        echo "  - $dep"
+    done
+    handle_exit
+fi
 
 ###########################################
 #
 #	DEFINE ARGUMENTS/PARAMETERS
 #
 ###########################################
-echo "# SETUP"
+echo "# ARGUMENTS"
 # Loop until a valid project name is provided
 while true; do
     # Check if a project name is provided as a second argument or prompt the user

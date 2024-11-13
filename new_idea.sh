@@ -36,7 +36,7 @@ if [[ " $* " == *" --help "* || " $* " == *" -h "* ]]; then
     echo "  $0 cim customers 17"
     echo ""
     echo "Notes:"
-    echo "  - Also works with existing project folders"
+    echo "  - Also works with existing project folders."
     echo ""
     echo "Options:"
     echo "  [-h, --help]       Show this help message and exit."
@@ -179,7 +179,7 @@ echo "# GIT IDEA TEMPLATE"
 TEMP_DIR="${DEST_DIR}/temp"
 
 # Clone the GitHub repository into the destination directory
-git clone "$IDEA_REPO_URL" "$TEMP_DIR" || handle_exit "There was an error during template cloning"
+git clone "$IDEA_REPO_URL" "$TEMP_DIR" || handle_exit "There was an error during template cloning."
 
 # Check if the .idea folder already exists
 if [ -d "$DEST_DIR/.idea" ]; then
@@ -263,7 +263,7 @@ echo "# PRE-COMMIT"
 {
     cd $DEST_DIR
     pre-commit install
-} || handle_exit "There was an error during the pre-commit"
+} || handle_exit "There was an error during the pre-commit."
 
 ##################
 #

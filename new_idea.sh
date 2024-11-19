@@ -280,6 +280,7 @@ echo "## PLACEHOLDER REPLACES"
         sed -i "s/#version_input#/${version_input}/g" "$filename"
         sed -i "s/#project_name#/${project_name}/g" "$filename"
         sed -i "s/#folder_name#/${folder_name}/g" "$filename"
+        sed -i "s/#testing_folder#/${TEST_DIR}/g" "$filename"
 
         # File renames
         new_filename=$(echo "$new_filename" | sed "s/#version_input#/$version_input/")

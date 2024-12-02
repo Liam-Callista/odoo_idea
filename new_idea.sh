@@ -114,7 +114,7 @@ while true; do
     fi
 
     # Validate project name: it should only contain a-Z and not be empty
-    if [[ ! "$project_name" =~ ^[a-z-]+$ ]]; then
+    if [[ ! "$project_name" =~ ^[a-z_-]+$ ]]; then
         echo -e "You must provide a valid project name containing only letters.\n"
         set -- # Clear the arguments
     else

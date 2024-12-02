@@ -14,7 +14,7 @@
     <option name="ADD_SOURCE_ROOTS" value="false" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../odoo/odoo#version_input#/odoo-bin" />
-    <option name="PARAMETERS" value="--dev=xml -c ../../configs/odoo#version_input#.conf --addons-path=../odoo#version_input#-enterprise,addons,../../#folder_name#/#project_name##multi_version_input# -d #project_name##version_input# -i base" />
+    <option name="PARAMETERS" value="--dev=xml -c ../../configs/odoo#version_input#.conf --addons-path=../odoo#version_input#-enterprise,addons,../../#folder_name#/#project_name##multi_version_input# -d #project_name##version_input# -i placeholder" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />

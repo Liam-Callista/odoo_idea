@@ -113,9 +113,9 @@ while true; do
         read -r -p "Enter the project name: " project_name
     fi
 
-    # Validate project name: it should only contain a-Z and not be empty
-    if [[ ! "$project_name" =~ ^[a-z_-]+$ ]]; then
-        echo -e "You must provide a valid project name containing only letters.\n"
+    # Validate project name
+    if [[ ! "$project_name" =~ ^[a-z0-9_-]+$ ]]; then
+        echo -e "You must provide a valid project name.\n"
         set -- # Clear the arguments
     else
         break
@@ -138,13 +138,10 @@ while true; do
         echo
     fi
 
-    # Validate folder name: it should only contain a-Z or be empty
-    if [[ ! "$folder_name" =~ ^[a-z]+$ ]]; then
-        echo -e "You must provide a valid folder name containing only letters.\n"
-        set -- # Clear the arguments
-    # Check if folder exists
-    elif [[ ! -d "$HOME/Development/$folder_name" ]]; then
+    # Validate folder name: Check if folder exists
+    if [[ ! -d "$HOME/Development/$folder_name" ]]; then
         echo -e "The folder '$folder_name' does not exist in $HOME/Development.\n"
+        set -- # Clear the arguments
     else
         folder_name=${folder_name}
         break

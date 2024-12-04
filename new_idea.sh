@@ -186,7 +186,7 @@ done
 echo
 echo "# GIT CALLISTA PROJECT"
 # Set destination directory (multiversion)
-if [ "$folder_name" == "$CUS_DIR" ]; then
+if [[ "$folder_name" == "$CUS_DIR" || "$folder_name" == "$THIRD_PARTY_DIR" ]]; then
     DEST_DIR="$DEV_DIR/${folder_name}/${project_name}"
 else
     DEST_DIR="$DEV_DIR/${folder_name}/${project_name}${version_input}"

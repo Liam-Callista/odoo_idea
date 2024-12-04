@@ -7,6 +7,7 @@
 #################
 DEV_DIR="$HOME/Development"
 CUS_DIR="customers"
+THIRD_PARTY_DIR="3rdparty"
 TEST_DIR="testing"
 
 REPOS_URL="git@github.com:callista-tools/"
@@ -192,12 +193,8 @@ else
 fi
 
 {
-    # Clone the GitHub repository into the destination directory (multiversion)
-    if [ "$folder_name" == "$CUS_DIR" ]; then
-        git clone "$PROJECT_REPO_URL" "$DEST_DIR"
-    else
-        git clone "$PROJECT_REPO_URL" "$DEST_DIR" --branch ${version_input}.0
-    fi
+    # Clone the GitHub repository into the destination directory
+    git clone "$PROJECT_REPO_URL" "$DEST_DIR" --branch ${version_input}.0
 } || {
     # Check if the clone was successful
     echo
@@ -255,7 +252,7 @@ echo "## PLACEHOLDER REPLACES"
         new_filename=$filename
 
         # Add version number to text and filename if multiversion (multiversion)
-        if [ "$folder_name" != "$CUS_DIR" ]; then
+        if [[ "$folder_name" == "$CUS_DIR" || "$folder_name" == "$THIRD_PARTY_DIR" ]]; then
             sed -i "s/#multi_version_input#/${version_input}/g" "$filename"
             new_filename=$(echo "$filename" | sed "s/#multi_version_input#/$version_input/")
         else

@@ -253,11 +253,11 @@ echo "## PLACEHOLDER REPLACES"
 
         # Add version number to text and filename if multiversion (multiversion)
         if [[ "$folder_name" == "$CUS_DIR" || "$folder_name" == "$THIRD_PARTY_DIR" ]]; then
-            sed -i "s/#multi_version_input#/${version_input}/g" "$filename"
-            new_filename=$(echo "$filename" | sed "s/#multi_version_input#/$version_input/")
-        else
             sed -i "s/#multi_version_input#//g" "$filename"
             new_filename=$(echo "$filename" | sed "s/#multi_version_input#//")
+        else
+            sed -i "s/#multi_version_input#/${version_input}/g" "$filename"
+            new_filename=$(echo "$filename" | sed "s/#multi_version_input#/$version_input/")
         fi
 
         # Remove or handle testing code blocks

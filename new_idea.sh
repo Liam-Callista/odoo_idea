@@ -10,8 +10,8 @@ CUS_DIR="customers"
 THIRD_PARTY_DIR="3rdparty"
 TEST_DIR="testing"
 
-REPOS_URL="git@github.com:callista-tools/"
 IDEA_REPO_URL="git@github.com:Liam-Callista/odoo_idea.git"
+REPOS_URL="git@github.com:callista-tools/"
 
 ODOO_VERSION_REGEX='[0-9]+(\.[0-9]+)?'
 
